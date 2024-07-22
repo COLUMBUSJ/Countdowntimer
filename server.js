@@ -7,7 +7,9 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 let timerDuration = 90 * 60; // 90 minutes in seconds
+let remainingTime = timerDuration;
 let endTime = null;
+let countdown;
 let isCounting = false;
 
 app.use(express.static('public'));
@@ -15,7 +17,8 @@ app.use(express.static('public'));
 io.on('connection', (socket) => {
     console.log('a user connected');
 
-    if (endTime && isCounting) {
+    // Send the current timer status to the new connection
+    if (isCounting) {
         const remainingTime = Math.max(0, Math.round((endTime - Date.now()) / 1000));
         socket.emit('timer', { remainingTime });
     } else {
@@ -24,26 +27,36 @@ io.on('connection', (socket) => {
 
     socket.on('start', (data) => {
         if (!isCounting) {
-            endTime = Date.now() + data.remainingTime * 1000;
+            remainingTime = data.remainingTime;
+            endTime = Date.now() + remainingTime * 1000;
             isCounting = true;
-            io.emit('timer', { remainingTime: data.remainingTime });
+            countdown = setInterval(() => {
+                remainingTime = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+                io.emit('timer', { remainingTime });
+                if (remainingTime <= 0) {
+                    clearInterval(countdown);
+                    isCounting = false;
+                }
+            }, 1000);
+            io.emit('timer', { remainingTime });
         }
     });
 
     socket.on('stop', () => {
         if (isCounting) {
-            timerDuration = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+            clearInterval(countdown);
             isCounting = false;
             endTime = null;
-            io.emit('timer', { remainingTime: timerDuration });
+            io.emit('timer', { remainingTime });
         }
     });
 
     socket.on('reset', () => {
+        clearInterval(countdown);
         isCounting = false;
         endTime = null;
-        timerDuration = 90 * 60; // Reset to 90 minutes
-        io.emit('timer', { remainingTime: timerDuration });
+        remainingTime = timerDuration;
+        io.emit('timer', { remainingTime });
     });
 
     socket.on('disconnect', () => {
