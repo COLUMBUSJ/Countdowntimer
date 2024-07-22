@@ -41,10 +41,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
             clearInterval(countdown);
             isCounting = false;
             startStopButton.textContent = 'Start';
+            socket.emit('stop');
         } else {
             startCountdown();
             isCounting = true;
             startStopButton.textContent = 'Stop';
+            socket.emit('start', { remainingTime });
         }
     }
 
@@ -54,6 +56,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         remainingTime = 90 * 60; // 重置为90分钟
         displayTime(remainingTime);
         startStopButton.textContent = 'Start';
+        socket.emit('reset');
     }
 
     socket.on('timer', (data) => {
@@ -66,13 +69,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     });
 
-    startStopButton.addEventListener('click', () => {
-        socket.emit('start');
-    });
-
-    resetButton.addEventListener('click', () => {
-        socket.emit('reset');
-    });
+    startStopButton.addEventListener('click', toggleCountdown);
+    resetButton.addEventListener('click', resetCountdown);
 
     // Initialize the display
     displayTime(remainingTime);

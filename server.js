@@ -8,32 +8,41 @@ const io = socketIo(server);
 
 let timerDuration = 90 * 60; // 90 minutes in seconds
 let endTime = null;
+let isCounting = false;
 
 app.use(express.static('public'));
 
 io.on('connection', (socket) => {
     console.log('a user connected');
 
-    // Send the current timer status to the new connection
-    if (endTime) {
+    if (endTime && isCounting) {
         const remainingTime = Math.max(0, Math.round((endTime - Date.now()) / 1000));
         socket.emit('timer', { remainingTime });
     } else {
         socket.emit('timer', { remainingTime: timerDuration });
     }
 
-    socket.on('start', () => {
-        if (!endTime) {
-            endTime = Date.now() + timerDuration * 1000;
+    socket.on('start', (data) => {
+        if (!isCounting) {
+            endTime = Date.now() + data.remainingTime * 1000;
+            isCounting = true;
+            io.emit('timer', { remainingTime: data.remainingTime });
+        }
+    });
+
+    socket.on('stop', () => {
+        if (isCounting) {
+            timerDuration = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+            isCounting = false;
+            endTime = null;
             io.emit('timer', { remainingTime: timerDuration });
-        } else {
-            const remainingTime = Math.max(0, Math.round((endTime - Date.now()) / 1000));
-            io.emit('timer', { remainingTime });
         }
     });
 
     socket.on('reset', () => {
+        isCounting = false;
         endTime = null;
+        timerDuration = 90 * 60; // Reset to 90 minutes
         io.emit('timer', { remainingTime: timerDuration });
     });
 
