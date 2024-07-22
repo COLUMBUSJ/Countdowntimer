@@ -1,0 +1,41 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    font-family: 'Impact', sans-serif;
+    background-color: #f0f0f0; /* 修改背景颜色 */
+}
+
+#timer {
+    font-size: 10rem; /* 修改字体大小 */
+    color: #333; /* 修改字体颜色 */
+    margin-bottom: 20px;
+}
+
+#buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* 增加按钮之间的间距 */
+}
+
+button {
+    padding: 20px 40px;
+    font-size: 2rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px; /* 修改按钮边框圆角 */
+    color: #fff; /* 修改按钮字体颜色 */
+    background-color: #1b4df1; /* 修改按钮背景颜色 */
+    transition: background-color 0.3s; /* 添加按钮背景颜色变化的过渡效果 */
+}
+
+button:hover {
+    background-color: #0056b3; /* 修改按钮悬停时的背景颜色 */
+}
+
+button:active {
+    background-color: #004080; /* 修改按钮点击时的背景颜色 */
+}
