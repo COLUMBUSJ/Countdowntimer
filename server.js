@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-let timerDuration = 90 * 60; // 90 minutes in seconds
+let timerDuration = 2 * 60; // 2 minutes in seconds
 let remainingTime = timerDuration;
 let timerInterval = null;
 let isCounting = false;
@@ -15,8 +15,8 @@ let isCounting = false;
 app.use(express.static('public'));
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
-    
+    console.log('A user connected');
+
     // Send the current timer status to the new connection
     socket.emit('timer', { remainingTime, isCounting });
 
@@ -56,10 +56,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        console.log('User disconnected');
     });
 });
 
-server.listen(3000, () => {
-    console.log('listening on *:3000');
+const PORT = 3000;
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
