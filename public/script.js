@@ -9,14 +9,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     let timerInterval = null;
     let isCounting = false;
+    const initialTime = 2 * 60; // 2 minutes in seconds
+    let timeRemaining = initialTime;
+
     const drawTimes = [
         { hours: 20, minutes: 0 },
         { hours: 21, minutes: 30 },
         { hours: 23, minutes: 0 }
     ];
-
-    const initialTime = 2 * 60; // 2 minutes in seconds
-    let timeRemaining = initialTime;
 
     // 更新中国时间显示
     function updateChinaTime() {
