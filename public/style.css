@@ -8,9 +8,9 @@ body {
     background-color: #f0f0f0; /* 修改背景颜色 */
 }
 
-#timer {
+#timer, #china-time {
     font-size: 10rem; /* 修改字体大小 */
-    color: #333; /* 修改字体颜色 */
+    color: #ffffffe0; /* 修改字体颜色 */
     margin-bottom: 20px;
 }
 
