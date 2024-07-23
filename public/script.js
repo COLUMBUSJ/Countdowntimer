@@ -21,8 +21,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // 更新中国时间显示
     function updateChinaTime() {
         const now = new Date();
-        const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-        const chinaTime = new Date(utc + (3600000 * 8)); // 将UTC时间转换为中国时间
+        const chinaTime = new Date(now.getTime() + (8 * 60 * 60 * 1000)); // 将当前时间转换为中国时间
         const hours = chinaTime.getUTCHours();
         const minutes = chinaTime.getUTCMinutes();
         const seconds = chinaTime.getUTCSeconds();
