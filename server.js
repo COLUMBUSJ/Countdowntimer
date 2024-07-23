@@ -6,8 +6,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-let timerDuration = 2 * 60; // 2 minutes in seconds
-let remainingTime = timerDuration;
+const initialTime = 2 * 60; // 2 minutes in seconds
+let remainingTime = initialTime;
 let timerInterval = null;
 let isCounting = false;
 
@@ -50,7 +50,7 @@ io.on('connection', (socket) => {
     socket.on('reset', () => {
         clearInterval(timerInterval);
         timerInterval = null;
-        remainingTime = timerDuration;
+        remainingTime = initialTime;
         isCounting = false;
         io.emit('timer', { remainingTime, isCounting });
     });
